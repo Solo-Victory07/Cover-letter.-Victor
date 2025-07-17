@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solomon Victor - Interactive Infographic Cover Letter</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Fallback background color */
+            color: #333;
+            margin: 0; /* Remove default body margin */
+            padding: 0; /* Remove default body padding */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            display: flex; /* Use flexbox to center content vertically */
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            position: relative; /* Needed for absolute positioning of watermark */
+        }
+
+        /* Watermark background div */
+        #background-watermark {
+            position: fixed; /* Fixed position relative to the viewport */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('http://googleusercontent.com/file_content/1'); /* Corrected image URL for reliability */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.1; /* Adjust for watermark effect (very subtle) */
+            filter: grayscale(100%) brightness(150%); /* Make it monochrome and lighter */
+            z-index: -1; /* Place it behind all other content */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 1.5rem auto; /* Reduced overall container margin */
+            background-color: #fff; /* Solid white background for content readability */
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative; /* Ensure container is above watermark */
+            z-index: 1; /* Place it above the watermark */
+        }
+        .header-section {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 1.5rem; /* Reduced padding */
+            text-align: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .section-title {
+            font-size: 1.4rem; /* Slightly reduced font size */
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 0.8rem; /* Reduced margin */
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.4rem; /* Reduced padding */
+        }
+        .icon-box {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem; /* Reduced gap */
+            margin-bottom: 0.6rem; /* Reduced margin */
+            font-size: 0.9rem; /* Slightly reduced font size */
+        }
+        .icon {
+            color: #007bff;
+            font-size: 1.15rem; /* Slightly reduced icon size */
+        }
+        .skill-bar-container {
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        .skill-bar {
+            background-color: #007bff;
+            height: 100%;
+            border-radius: 9999px;
+        }
+        .experience-card {
+            background-color: #f8faff;
+            border-left: 4px solid #007bff;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        .experience-card:hover {
+            transform: translateY(-3px);
+        }
+        .experience-card:last-child {
+            margin-bottom: 0;
+        }
+        .experience-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        .experience-company {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        .bullet-point::before {
+            content: '•';
+            color: #007bff;
+            font-size: 1.2rem;
+            line-height: 1;
+            margin-right: 0.5rem;
+        }
+        .footer-section {
+            background-color: #333;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .grid-cols-1-2 {
+            grid-template-columns: 1fr 2fr;
+        }
+
+        /* Interactive elements */
+        .nav-button {
+            padding: 0.6rem 1rem; /* Reduced padding */
+            border-radius: 8px;
+            background-color: #e0f2fe;
+            color: #007bff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            border: 1px solid #90cdf4;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem; /* Reduced gap */
+            font-size: 0.9rem; /* Slightly reduced font size */
+        }
+        .nav-button:hover {
+            background-color: #bfdbfe;
+            color: #0056b3;
+        }
+        .nav-button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+
+        /* New styles for skill cards and tool categories */
+        .skill-card {
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            padding: 0.8rem; /* Reduced padding */
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 110px; /* Slightly reduced min-height */
+        }
+        .skill-card .emoji {
+            font-size: 2.2rem; /* Slightly reduced emoji size */
+            margin-bottom: 0.4rem; /* Reduced margin */
+        }
+        .skill-card .text-sm {
+            font-weight: 500;
+            line-height: 1.2; /* Reduced line height */
+        }
+        .skill-card .description {
+            font-size: 0.75rem; /* Slightly reduced font size */
+            color: #555;
+            margin-top: 0.4rem; /* Reduced margin */
+            line-height: 1.3; /* Reduced line height */
+        }
+
+        .tool-category-card {
+            background-color: #f0f9ff;
+            border-radius: 10px;
+            padding: 1.2rem; /* Reduced padding */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #bfdbfe;
+        }
+        .tool-category-card .emoji {
+            font-size: 2.5rem; /* Slightly reduced emoji size */
+            margin-bottom: 0.8rem; /* Reduced margin */
+            text-align: center;
+        }
+        .tool-category-card h3 {
+            font-size: 1.1rem; /* Slightly reduced font size */
+            font-weight: 700;
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 0.8rem; /* Reduced margin */
+        }
+        .tool-category-card p {
+            font-size: 0.85rem; /* Slightly reduced font size */
+            line-height: 1.4; /* Reduced line height */
+            color: #444;
+        }
+        .tool-category-card .logo {
+            height: 1.1em; /* Slightly reduced logo size */
+            vertical-align: middle;
+            margin-left: 0.2em; /* Reduced margin */
+            display: inline-block;
+        }
+
+        /* New style for Why Paytm section */
+        .why-Paytm-card {
+            background-color: #e6f7ff;
+            border-radius: 10px;
+            padding: 1.2rem; /* Reduced padding */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #a0d9f7;
+            margin-top: 1.5rem; /* Reduced margin */
+        }
+        .why-Paytm-card p {
+            font-size: 0.9rem; /* Slightly reduced font size */
+            line-height: 1.5; /* Reduced line height */
+            margin-bottom: 0.6rem; /* Reduced margin */
+            color: #333;
+        }
+        .why-Paytm-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* New style for Intro Statement */
+        .intro-statement-card {
+            background-color: #f8faff;
+            border-left: 4px solid #007bff;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .intro-statement-card p {
+            font-size: 0.95rem;
+            line-height: 1.4; /* Reduced line height */
+            margin-bottom: 0.2rem; /* Reduced margin */
+        }
+        .intro-statement-card p.dear-team {
+            margin-top: 0.5em; /* Half a line space before Dear Team */
+            margin-bottom: 0.2rem; /* Keep existing small margin bottom */
+        }
+        .intro-statement-card p.main-intro-line {
+            margin-top: 0; /* Ensure no extra top margin */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                margin: 0.5rem; /* Further reduced margin on small screens */
+            }
+            .grid-cols-1-2 {
+                grid-template-columns: 1fr;
+            }
+            .section-title {
+                font-size: 1.2rem;
+            }
+            .nav-container {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+                padding: 0.5rem 0.8rem;
+            }
+            .skill-grid, .tool-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjusted for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Watermark Layer -->
+    <div id="background-watermark"></div>
+
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <!-- Removed the profile picture <img> tag -->
+            <h1 class="text-3xl font-bold mb-1">Solomon Victor</h1>
+            <p class="text-lg font-medium">Transaction Monitoring (AML) - Senior Manager Candidate</p>
+            <p class="text-sm mt-2">Highly motivated and results-oriented Team Lead (operations specialist) seeking a challenging role to utilize my skills and expand my knowledge.</p>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="bg-gray-100 p-4 flex flex-wrap justify-center gap-3 nav-container">
+            <button class="nav-button active" onclick="scrollToSection('contact-info')">
+                <span class="text-lg">&#128100;</span> Contact
+            </button>
+            <button class="nav-button" onclick="scrollToSection('intro-statement')">
+                <span class="text-lg">&#128220;</span> Introduction
+            </button>
+            <button class="nav-button" onclick="scrollToSection('key-skills')">
+                <span class="text-lg">&#128172;</span> Skills
+            </button>
+            <button class="nav-button" onclick="scrollToSection('tool-skills')">
+                <span class="text-lg">&#128736;&#65039;</span> Tools
+            </button>
+            <button class="nav-button" onclick="scrollToSection('why-Paytm')">
+                <span class="text-lg">&#128170;</span> Why Paytm?
+            </button>
+            <button class="nav-button" onclick="scrollToSection('work-experience')">
+                <span class="text-lg">&#128188;</span> Experience
+            </button>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="p-6 grid grid-cols-1 md:grid-cols-1-2 gap-8">
+            <!-- Left Column: Contact, Skills, Tools, Why Paytm? -->
+            <div>
+                <!-- Contact Information -->
+                <div class="mb-6" id="contact-info">
+                    <h2 class="section-title">Contact Information</h2>
+                    <div class="icon-box">
+                        <span class="icon">&#9993;</span> <!-- Envelope icon -->
+                        <span>reachsolo_victor@outlook.com</span>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">&#9742;</span> <!-- Phone icon -->
+                        <span>+91-7204215124</span>
+                    </div>
+                    <div class="icon-box">
+                        <span class="icon">&#127760;</span> <!-- Globe icon -->
+                        <span>Bangalore, India</span>
+                    </div>
+                </div>
+
+                <!-- New Introduction Statement -->
+                <div class="mb-6" id="intro-statement">
+                    <div class="intro-statement-card">
+                        <p>To Paytm’s,<br>Talent Acquisition Team</p>
+                        <p class="dear-team">Dear Team,</p>
+                        <p class="main-intro-line">&nbsp;&nbsp;&nbsp;This cover letter expresses my strong interest in the position of Team Lead, AML & Screening Investigations at Paytm, as advertised on Company Website.</p>
+                    </div>
+                </div>
+
+                <!-- Key Skills & Expertise -->
+                <div class="mb-6" id="key-skills">
+                    <h2 class="section-title">Key Skills & Expertise</h2>
+                    <div class="grid grid-cols-2 gap-4 skill-grid">
+                        <div class="skill-card">
+                            <span class="emoji">&#128269;</span> <!-- Magnifying Glass Tilted Left -->
+                            <p class="text-sm">Fraud Prevention & Analysis</p>
+                            <p class="description">Expert in identifying complex fraud patterns, mitigating financial losses, and developing proactive prevention strategies.</p>
+                            <div class="skill-bar-container"><div class="skill-bar" style="width: 95%;"></div></div>
+                        </div>
+                        <div class="skill-card">
+                            <span class="emoji">&#128176;</span> <!-- Money Bag -->
+                            <p class="text-sm">AML/CFT Policy & Compliance</p>
+                            <p class="description">Proficient in developing and implementing robust AML/CFT policies to ensure adherence to regulatory requirements.</p>
+                            <div class="skill-bar-container"><div class="skill-bar" style="width: 90%;"></div></div>
+                        </div>
+                        <div class="skill-card">
+                            <span class="emoji">&#128200;</span> <!-- Chart Increasing -->
+                            <p class="text-sm">Transaction Monitoring & Risk Assessment</p>
+                            <p class="description">Skilled in analyzing transaction patterns to detect anomalies, assess risks, and prevent illicit financial activities.</p>
+                            <div class="skill-bar-container"><div class="skill-bar" style="width: 88%;"></div></div>
+                        </div>
+                        <div class="skill-card">
+                            <span class="emoji">&#128272;</span> <!-- Locked with Key -->
+                            <p class="text-sm">Sanctions & PEP Screening</p>
+                            <p class="description">Experienced in conducting thorough CDD/EDD, sanctions, and PEP screening to identify high-risk individuals and entities.</p>
+                            <div class="skill-bar-container"><div class="skill-bar" style="width: 85%;"></div></div>
+                        </div>
+                        <div class="skill-card">
+                            <span class="emoji">&#128721;</span> <!-- Shopping Bags -->
+                            <p class="text-sm">Account Takeover (ATO) Prevention</p>
+                            <p class="description">Adept at detecting and thwarting ATO attempts, securing compromised accounts, and preventing financial losses.</p>
+                            <div class="skill-bar-container"><div class="skill-bar" style="width: 92%;"></div></div>
+                        </div>
+                        <div class="skill-card">
+                            <span class="emoji">&#128187;</span> <!-- Laptop -->
+                            <p class="text-sm">Digital Footprint Analysis</p>
+                            <p class="description">Proficient in analyzing digital footprints to identify suspicious login patterns and potential compliance breaches.</p>
+                            <div class="skill-bar-container"><div class="skill-bar" style="width: 80%;"></div></div>
+                        </div>
+                        <div class="skill-card">
+                            <span class="emoji">&#128101;</span> <!-- People holding hands -->
+                            <p class="text-sm">Team Leadership & Training</p>
+                            <p class="description">Proven ability to lead, mentor, and train teams of 9+ analysts, fostering best practices in AML / risk management from Salt Lake City, Dallas, London to Bangalore —achieving a 30% boost in case resolution accuracy through training and digital risk modeling.</p>
+                            <div class="skill-bar-container"><div class="skill-bar" style="width: 90%;"></div></div>
+                        </div>
+                        <div class="skill-card">
+                            <span class="emoji">&#128221;</span> <!-- Memo -->
+                            <p class="text-sm">Regulatory Reporting (SAR/STR)</p>
+                            <p class="description">Ensuring timely and accurate reporting of suspicious activities to regulatory bodies like FIU.</p>
+                            <div class="skill-bar-container"><div class="skill-bar" style="width: 87%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool Skills & Attributes -->
+                <div class="mb-6" id="tool-skills">
+                    <h2 class="section-title">Tool Skills & Attributes</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 tool-grid">
+                        <div class="tool-category-card">
+                            <span class="emoji">&#128270;</span> <!-- Magnifying Glass Right -->
+                            <h3>Fraud/Risk Tools</h3>
+                            <p class="text-sm">Lexis Nexis Threat-Metrix, Risk Narrative, Emailage, SWIFT (MT103, 202, ISO-20022), Jira, Sift Automations, Zendesk</p>
+                        </div>
+                        <div class="tool-category-card">
+                            <span class="emoji">&#128274;</span> <!-- Locked -->
+                            <h3>Sanctions/PEP Tools</h3>
+                            <p class="text-sm">Refinitiv World-Check, Descartes, NICE Actimize</p>
+                        </div>
+                        <div class="tool-category-card">
+                            <span class="emoji">&#128179;</span> <!-- Credit Card -->
+                            <h3>Payment Gateways</h3>
+                            <p class="text-sm">
+                                Stripe <img src="https://placehold.co/20x20/635BFF/ffffff?text=S" alt="Stripe Logo" class="logo">,
+                                Adyen <img src="https://placehold.co/20x20/000000/ffffff?text=A" alt="Paytm Logo" class="logo">,
+                                Paypal <img src="https://placehold.co/20x20/003087/ffffff?text=P" alt="Paypal Logo" class="logo">,
+                                Amazon Pay <img src="https://placehold.co/20x20/FF9900/ffffff?text=AP" alt="Amazon Pay Logo" class="logo">
+                            </p>
+                        </div>
+                        <div class="tool-category-card">
+                            <span class="emoji">&#128202;</span> <!-- Bar Chart -->
+                            <h3>Compliance & Data</h3>
+                            <p class="text-sm">Regulatory Frameworks: OFAC, Bank Secrecy Act, USA Patriot Act, UK Bribery Act, FinCen, NACHA, FINRA</p>
+                            <p class="text-sm">Data Analysis & Reporting Tools: MS Suite (Excel), Alteryx, Python, SQL, Tableau</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Why Paytm? Section -->
+                <div class="mb-6" id="why-Paytm">
+                    <h2 class="section-title">Why Paytm?</h2>
+                    <div class="why-Paytm-card">
+                        <p><strong>Innovation meets integrity</strong> — Paytm’s seamless global payments platform aligns with my passion for tech-driven, compliant financial ecosystems.</p>
+                        <p><strong>Built for impact</strong> — I bring deep expertise in fraud analytics, sanctions screening, and AML investigations that directly support Paytm’s real-time risk intelligence.</p>
+                        <p><strong>Culture fit</strong> — Paytm’s values of ownership and collaboration mirror my leadership style and drive for excellence.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Work Experience -->
+            <div>
+                <h2 class="section-title" id="work-experience">Overall Work Experience</h2>
+
+                <div class="experience-card">
+                    <p class="text-sm">With over 7 years of progressive experience in financial crime prevention at leading organizations like Eshaa Corporate Services, Goldman Sachs, and Amazon, I have a proven track record in AML/CFT, fraud analysis, sanctions screening, and leading high-performing teams.</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer-section">
+            <p class="text-sm">&copy; 2025 Solomon Victor. All rights reserved.</p>
+            <p class="text-sm mt-1">Committed to driving innovation, delivering measurable results, and contributing to organizational success with a passion for excellence.</p>
+        </div>
+    </div>
+
+    <script>
+        // Function to scroll to a specific section and highlight the active nav button
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Update active state for nav buttons
+                const navButtons = document.querySelectorAll('.nav-button');
+                navButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                // Find the button that triggered the scroll and add 'active' class
+                const activeButton = document.querySelector(`.nav-button[onclick*="${sectionId}"]`);
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                }
+            }
+        }
+
+        // Set initial active nav button (e.g., Contact) on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialSection = document.getElementById('contact-info');
+            if (initialSection) {
+                const initialButton = document.querySelector('.nav-button[onclick*="contact-info"]');
+                if (initialButton) {
+                    initialButton.classList.add('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
